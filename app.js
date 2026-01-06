@@ -131,7 +131,7 @@ const mockHouseData = {
     price: 268, // 总价（万元）
     area: 89, // 面积（平米）
     gift: 15, // 赠送面积（平米）
-    layout: '3室2厅3室2厅3室2厅', // 户型
+    layout: '3室2厅3室', // 户型
     decoration: '精装', // 装修
     hasParking: true, // 是否有车位
     parkingPrice: 25, // 车位价格（万元）
