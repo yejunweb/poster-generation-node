@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- 适配移动端视口 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>房源信息</title>
+    <style>
+        /* 全局样式重置：清除默认边距 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '微软雅黑', sans-serif;
+        }
+
+        /* 房源卡片容器：控制卡片整体样式 */
+        .house-card {
+            width: 7.5rem;
+            /* 卡片最大宽度 */
+            height: auto;
+            border: 0.02rem solid #eee;
+            /* 卡片边框 */
+            box-shadow: 0 0.04rem 0.16rem rgba(0, 0, 0, 0.1);
+            /* 轻微阴影增强层次感 */
+            overflow: hidden;
+            /* 防止内部元素溢出圆角 */
+        }
+
+        .house-card-header h2 {
+            font-size: 0.396rem;
+            color: #333;
+        }
+
+        /* 房源图片区域 */
+        .house-img-box {
+            width: 100%;
+            /* 图片自适应卡片宽度 */
+            height: 4.84rem;
+            /* 固定图片高度 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+            /* 图片为空时显示灰色背景 */
+        }
+
+        .house-img {
+            width: 100%;
+            /* 图片自适应卡片宽度 */
+            height: 4.84rem;
+            object-fit: cover;
+            /* 保持图片比例，裁剪多余部分 */
+        }
+
+        /* 房源描述区域 */
+        .house-info-box {
+            background-color: #fff;
+            position: relative;
+            z-index: 1;
+            margin-top: -0.88rem;
+            border-radius: 0.44rem 0.44rem 0 0;
+            overflow: hidden;
+        }
+
+        .house-title {
+            padding: 0.22rem 0.352rem;
+            font-weight: 800;
+            font-size: 0.528rem;
+            color: #252525;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        /* 房源基本信息列表：使用flex排版 */
+        .house-info {
+            display: flex;
+            /* 横向排列信息项 */
+            flex-wrap: wrap;
+            /* 超出宽度自动换行 */
+            font-size: 0.308rem;
+            color: #666;
+            padding: 0 0.352rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        /* 价格区域：突出展示价格 */
+        .house-price {
+            padding: 0 0.352rem 0.352rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        .total-price {
+            font-size: 0.484rem;
+            font-weight: bold;
+            color: #e03810;
+            /* 红色突出总价 */
+            margin-right: 0.11rem;
+        }
+
+        .unit-price {
+            font-size: 0.308rem;
+            color: #666;
+        }
+
+        /* 房源标签区域：标签样式 */
+        .house-tags {
+            padding: 0.22rem 0.352rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.176rem;
+            /* 标签之间的间距 */
+            width: 100%;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        .house-tags span {
+            padding: 0.088rem 0.176rem;
+            background-color: #f1f5f9;
+            border-radius: 0.088rem;
+            font-size: 0.264rem;
+            color: #475569;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 房源卡片主容器：先判断对象非空 -->
+    <div class="house-card" th:if="${miniProgramOneHouse != null}">
+        <!-- 房源展示图片：onePicture非空/非全空格才显示 -->
+        <div class="house-img-box">
+            <img class="house-img" th:src="${miniProgramOneHouse.onePicture}" alt="图"
+                th:if="${miniProgramOneHouse.onePicture != null and miniProgramOneHouse.onePicture.trim() != ''}" />
+        </div>
+
+        <div class="house-info-box">
+            <!-- 标题：oneSummary非空才显示 -->
+            <p class="house-title"
+                th:if="${miniProgramOneHouse.oneSummary != null and miniProgramOneHouse.oneSummary != ''}"
+                th:text="${miniProgramOneHouse.oneSummary}"></p>
+
+            <!-- 房源基本信息：oneRoomHallBathroom非空才显示 -->
+            <div class="house-info"
+                th:if="${miniProgramOneHouse.oneRoomHallBathroom != null and miniProgramOneHouse.oneRoomHallBathroom != ''}">
+                <div th:text="${miniProgramOneHouse.oneRoomHallBathroom}"></div>
+            </div>
+
+            <!-- 房源标签：oneLoopList1非空列表才渲染 -->
+            <div class="house-tags"
+                th:if="${miniProgramOneHouse.oneLoopList1 != null and !miniProgramOneHouse.oneLoopList1.isEmpty()}">
+                <span th:each="loopVar1 : ${miniProgramOneHouse.oneLoopList1}" th:text="${loopVar1}"></span>
+            </div>
+
+            <!-- 价格区域：总价/单价至少有一个非空才显示整个价格区域 -->
+            <div class="house-price"
+                th:if="(${miniProgramOneHouse.oneTotalPrice != null and miniProgramOneHouse.oneTotalPrice != ''}) or (${miniProgramOneHouse.oneUnitPrice != null and miniProgramOneHouse.oneUnitPrice != ''})">
+                <!-- 总价：oneTotalPrice非空才显示 -->
+                <span class="total-price"
+                    th:if="${miniProgramOneHouse.oneTotalPrice != null and miniProgramOneHouse.oneTotalPrice != ''}"
+                    th:text="${miniProgramOneHouse.oneTotalPrice}"></span>
+                <!-- 单价：oneUnitPrice非空才显示 -->
+                <span class="unit-price"
+                    th:if="${miniProgramOneHouse.oneUnitPrice != null and miniProgramOneHouse.oneUnitPrice != ''}"
+                    th:text="${miniProgramOneHouse.oneUnitPrice}"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://shanghai-house-model.oss-accelerate.aliyuncs.com/glb/file/rem_750.min.js"
+        type="text/javascript"></script>
+</body>
+
+</html>
